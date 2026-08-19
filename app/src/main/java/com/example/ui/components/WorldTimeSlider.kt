@@ -13,7 +13,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AvTimer
@@ -31,9 +30,9 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.example.ui.theme.AccentCyan
 import com.example.ui.theme.AccentGold
-import com.example.ui.theme.AccentSkyBlue
 import com.example.ui.theme.DarkCardBg
 import com.example.ui.theme.DarkCardBorder
 import com.example.ui.theme.TextPrimary
@@ -51,10 +50,10 @@ fun WorldTimeSlider(
     Surface(
         modifier = modifier
             .fillMaxWidth()
-            .glassmorphicCard(14.dp),
+            .glassmorphicCard(16.dp),
         color = DarkCardBg
     ) {
-        Column(modifier = Modifier.padding(12.dp)) {
+        Column(modifier = Modifier.padding(16.dp)) {
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween,
@@ -63,16 +62,17 @@ fun WorldTimeSlider(
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     Icon(
                         imageVector = Icons.Default.AvTimer,
-                        contentDescription = "Time Travel Converter",
-                        tint = AccentCyan,
-                        modifier = Modifier.size(18.dp)
+                        contentDescription = "Time Converter",
+                        tint = TextSecondary,
+                        modifier = Modifier.size(15.dp)
                     )
-                    Spacer(modifier = Modifier.width(6.dp))
+                    Spacer(modifier = Modifier.width(8.dp))
                     Text(
-                        text = "Global Time Scrubber",
-                        style = MaterialTheme.typography.titleMedium,
-                        color = TextPrimary,
-                        fontWeight = FontWeight.Bold
+                        text = "TIME SCRUBBER",
+                        style = MaterialTheme.typography.labelSmall,
+                        color = TextSecondary,
+                        fontWeight = FontWeight.SemiBold,
+                        letterSpacing = 0.5.sp
                     )
                 }
 
@@ -81,36 +81,36 @@ fun WorldTimeSlider(
                         verticalAlignment = Alignment.CenterVertically,
                         modifier = Modifier
                             .clip(RoundedCornerShape(6.dp))
-                            .background(Color(0x3338BDF8))
-                            .border(1.dp, AccentCyan.copy(alpha = 0.5f), RoundedCornerShape(6.dp))
+                            .background(Color(0x18FFFFFF))
+                            .border(0.6.dp, Color(0x40FFFFFF), RoundedCornerShape(6.dp))
                             .clickable { onReset() }
-                            .padding(horizontal = 8.dp, vertical = 3.dp)
+                            .padding(horizontal = 8.dp, vertical = 2.dp)
                     ) {
                         Icon(
                             imageVector = Icons.Default.RestartAlt,
                             contentDescription = "Reset",
-                            tint = AccentCyan,
-                            modifier = Modifier.size(13.dp)
+                            tint = TextPrimary,
+                            modifier = Modifier.size(12.dp)
                         )
                         Spacer(modifier = Modifier.width(4.dp))
                         Text(
-                            text = "Now",
+                            text = "Reset",
                             style = MaterialTheme.typography.labelSmall,
-                            color = AccentCyan,
-                            fontWeight = FontWeight.Bold
+                            color = TextPrimary,
+                            fontWeight = FontWeight.SemiBold
                         )
                     }
                 }
             }
 
-            Spacer(modifier = Modifier.height(4.dp))
+            Spacer(modifier = Modifier.height(6.dp))
 
             Text(
                 text = if (isTimeTravelActive) {
                     val sign = if (offsetHours > 0) "+$offsetHours" else "$offsetHours"
-                    "Simulating time: $sign hours from current live time"
+                    "Simulating $sign hours across all locations"
                 } else {
-                    "Synchronize future or past hours across all world cities"
+                    "Scrub to preview time across all cities"
                 },
                 style = MaterialTheme.typography.bodySmall,
                 color = if (isTimeTravelActive) AccentGold else TextSecondary
@@ -124,11 +124,11 @@ fun WorldTimeSlider(
                 valueRange = -12f..12f,
                 steps = 23,
                 colors = SliderDefaults.colors(
-                    thumbColor = AccentCyan,
-                    activeTrackColor = AccentSkyBlue,
-                    inactiveTrackColor = DarkCardBorder,
-                    activeTickColor = Color.White.copy(alpha = 0.3f),
-                    inactiveTickColor = Color.White.copy(alpha = 0.15f)
+                    thumbColor = TextPrimary,
+                    activeTrackColor = Color.White.copy(alpha = 0.8f),
+                    inactiveTrackColor = Color(0xFF1E1E26),
+                    activeTickColor = Color.White.copy(alpha = 0.2f),
+                    inactiveTickColor = Color.White.copy(alpha = 0.1f)
                 ),
                 modifier = Modifier.fillMaxWidth()
             )
@@ -137,15 +137,16 @@ fun WorldTimeSlider(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
-                Text("-12 hrs", style = MaterialTheme.typography.labelSmall, color = TextTertiary)
+                Text("-12h", style = MaterialTheme.typography.labelSmall, color = TextTertiary)
                 Text(
-                    text = if (offsetHours == 0) "Real-time (Live)" else if (offsetHours > 0) "+$offsetHours hrs" else "$offsetHours hrs",
+                    text = if (offsetHours == 0) "Live (Now)" else if (offsetHours > 0) "+$offsetHours hrs" else "$offsetHours hrs",
                     style = MaterialTheme.typography.labelMedium,
-                    color = if (offsetHours == 0) AccentCyan else AccentGold,
-                    fontWeight = FontWeight.Bold
+                    color = if (offsetHours == 0) TextPrimary else AccentGold,
+                    fontWeight = FontWeight.SemiBold
                 )
-                Text("+12 hrs", style = MaterialTheme.typography.labelSmall, color = TextTertiary)
+                Text("+12h", style = MaterialTheme.typography.labelSmall, color = TextTertiary)
             }
         }
     }
 }
+

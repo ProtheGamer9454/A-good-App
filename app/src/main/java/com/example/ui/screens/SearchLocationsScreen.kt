@@ -106,7 +106,7 @@ fun SearchLocationsScreen(
                 .fillMaxSize()
                 .padding(horizontal = 16.dp),
             contentPadding = PaddingValues(top = 16.dp, bottom = 96.dp),
-            verticalArrangement = Arrangement.spacedBy(16.dp)
+            verticalArrangement = Arrangement.spacedBy(14.dp)
         ) {
             // Top Bar
             item {
@@ -117,14 +117,15 @@ fun SearchLocationsScreen(
                     IconButton(
                         onClick = onBack,
                         modifier = Modifier
-                            .size(40.dp)
+                            .size(38.dp)
                             .clip(CircleShape)
-                            .background(Color(0x33FFFFFF))
+                            .background(Color(0x14FFFFFF))
                     ) {
                         Icon(
                             imageVector = Icons.Default.ArrowBack,
                             contentDescription = "Back",
-                            tint = TextPrimary
+                            tint = TextPrimary,
+                            modifier = Modifier.size(18.dp)
                         )
                     }
 
@@ -132,13 +133,13 @@ fun SearchLocationsScreen(
 
                     Column {
                         Text(
-                            text = "Explore Global Places",
-                            style = MaterialTheme.typography.titleLarge,
+                            text = "Search Locations",
+                            style = MaterialTheme.typography.titleMedium,
                             color = TextPrimary,
-                            fontWeight = FontWeight.Bold
+                            fontWeight = FontWeight.SemiBold
                         )
                         Text(
-                            text = "Find weather and time across any country or city",
+                            text = "Explore weather across any country or city",
                             style = MaterialTheme.typography.bodySmall,
                             color = TextSecondary
                         )
@@ -162,22 +163,24 @@ fun SearchLocationsScreen(
                         Icon(
                             imageVector = Icons.Default.Search,
                             contentDescription = "Search",
-                            tint = AccentCyan
+                            tint = TextSecondary,
+                            modifier = Modifier.size(18.dp)
                         )
                     },
                     trailingIcon = {
                         if (uiState.isSearching) {
                             CircularProgressIndicator(
-                                color = AccentCyan,
+                                color = TextPrimary,
                                 strokeWidth = 2.dp,
-                                modifier = Modifier.size(18.dp)
+                                modifier = Modifier.size(16.dp)
                             )
                         } else if (uiState.searchQuery.isNotEmpty()) {
                             IconButton(onClick = { viewModel.onSearchQueryChanged("") }) {
                                 Icon(
                                     imageVector = Icons.Default.Clear,
                                     contentDescription = "Clear",
-                                    tint = TextSecondary
+                                    tint = TextSecondary,
+                                    modifier = Modifier.size(16.dp)
                                 )
                             }
                         }
@@ -186,13 +189,13 @@ fun SearchLocationsScreen(
                     colors = OutlinedTextFieldDefaults.colors(
                         focusedContainerColor = DarkCardBg,
                         unfocusedContainerColor = DarkCardBg,
-                        focusedBorderColor = AccentCyan,
+                        focusedBorderColor = Color(0x60FFFFFF),
                         unfocusedBorderColor = DarkCardBorder,
                         focusedTextColor = TextPrimary,
                         unfocusedTextColor = TextPrimary,
-                        cursorColor = AccentCyan
+                        cursorColor = TextPrimary
                     ),
-                    shape = RoundedCornerShape(10.dp),
+                    shape = RoundedCornerShape(14.dp),
                     modifier = Modifier
                         .fillMaxWidth()
                         .testTag("location_search_input")
@@ -203,10 +206,11 @@ fun SearchLocationsScreen(
             if (uiState.searchResults.isNotEmpty()) {
                 item {
                     Text(
-                        text = "Search Results (${uiState.searchResults.size})",
-                        style = MaterialTheme.typography.titleMedium,
-                        color = AccentCyan,
-                        fontWeight = FontWeight.Bold
+                        text = "SEARCH RESULTS (${uiState.searchResults.size})",
+                        style = MaterialTheme.typography.labelSmall,
+                        color = TextSecondary,
+                        fontWeight = FontWeight.SemiBold,
+                        letterSpacing = 0.5.sp
                     )
                 }
 
@@ -218,13 +222,13 @@ fun SearchLocationsScreen(
                     Surface(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .glassmorphicCard(12.dp),
+                            .glassmorphicCard(14.dp),
                         color = DarkCardBg
                     ) {
                         Row(
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .padding(12.dp),
+                                .padding(14.dp),
                             verticalAlignment = Alignment.CenterVertically,
                             horizontalArrangement = Arrangement.SpaceBetween
                         ) {
@@ -233,7 +237,7 @@ fun SearchLocationsScreen(
                                     text = geo.name,
                                     style = MaterialTheme.typography.titleMedium,
                                     color = TextPrimary,
-                                    fontWeight = FontWeight.Bold
+                                    fontWeight = FontWeight.SemiBold
                                 )
                                 val subtitle = listOfNotNull(geo.admin1, geo.country)
                                     .filter { it.isNotBlank() }
@@ -245,9 +249,10 @@ fun SearchLocationsScreen(
                                 )
                                 if (!geo.timezone.isNullOrBlank()) {
                                     Text(
-                                        text = "Time Zone: ${geo.timezone}",
+                                        text = geo.timezone,
                                         style = MaterialTheme.typography.labelSmall,
-                                        color = AccentSkyBlue
+                                        color = TextTertiary,
+                                        fontSize = 11.sp
                                     )
                                 }
                             }
@@ -256,23 +261,23 @@ fun SearchLocationsScreen(
                                 Row(
                                     verticalAlignment = Alignment.CenterVertically,
                                     modifier = Modifier
-                                        .clip(RoundedCornerShape(6.dp))
-                                        .background(Color(0x3334D399))
-                                        .border(1.dp, AccentEmerald.copy(alpha = 0.4f), RoundedCornerShape(6.dp))
+                                        .clip(RoundedCornerShape(8.dp))
+                                        .background(Color(0x18FFFFFF))
+                                        .border(0.6.dp, Color(0x30FFFFFF), RoundedCornerShape(8.dp))
                                         .padding(horizontal = 8.dp, vertical = 4.dp)
                                 ) {
                                     Icon(
                                         imageVector = Icons.Default.Check,
                                         contentDescription = "Added",
-                                        tint = AccentEmerald,
-                                        modifier = Modifier.size(13.dp)
+                                        tint = TextPrimary,
+                                        modifier = Modifier.size(12.dp)
                                     )
                                     Spacer(modifier = Modifier.width(4.dp))
                                     Text(
-                                        text = "Added",
+                                        text = "Saved",
                                         style = MaterialTheme.typography.labelSmall,
-                                        color = AccentEmerald,
-                                        fontWeight = FontWeight.Bold
+                                        color = TextPrimary,
+                                        fontWeight = FontWeight.Medium
                                     )
                                 }
                             } else {
@@ -281,15 +286,15 @@ fun SearchLocationsScreen(
                                     modifier = Modifier
                                         .size(34.dp)
                                         .clip(RoundedCornerShape(8.dp))
-                                        .background(Color(0x2238BDF8))
-                                        .border(1.dp, AccentCyan.copy(alpha = 0.6f), RoundedCornerShape(8.dp))
+                                        .background(Color(0x18FFFFFF))
+                                        .border(0.6.dp, Color(0x40FFFFFF), RoundedCornerShape(8.dp))
                                         .testTag("add_search_result_${geo.name}")
                                 ) {
                                     Icon(
                                         imageVector = Icons.Default.Add,
                                         contentDescription = "Add Place",
-                                        tint = AccentCyan,
-                                        modifier = Modifier.size(18.dp)
+                                        tint = TextPrimary,
+                                        modifier = Modifier.size(16.dp)
                                     )
                                 }
                             }
@@ -315,20 +320,21 @@ fun SearchLocationsScreen(
 
             // Popular Global Destinations Section
             item {
-                Spacer(modifier = Modifier.height(6.dp))
+                Spacer(modifier = Modifier.height(4.dp))
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     Icon(
                         imageVector = Icons.Default.Public,
                         contentDescription = "World Hubs",
-                        tint = AccentGold,
-                        modifier = Modifier.size(16.dp)
+                        tint = TextSecondary,
+                        modifier = Modifier.size(14.dp)
                     )
                     Spacer(modifier = Modifier.width(6.dp))
                     Text(
-                        text = "Popular World Hubs & Capitals",
-                        style = MaterialTheme.typography.titleMedium,
-                        color = TextPrimary,
-                        fontWeight = FontWeight.Bold
+                        text = "POPULAR WORLD CITIES",
+                        style = MaterialTheme.typography.labelSmall,
+                        color = TextSecondary,
+                        fontWeight = FontWeight.SemiBold,
+                        letterSpacing = 0.5.sp
                     )
                 }
             }
@@ -346,12 +352,12 @@ fun SearchLocationsScreen(
 
                         Surface(
                             modifier = Modifier
-                                .clip(RoundedCornerShape(8.dp))
-                                .background(if (isAdded) Color(0x3334D399) else DarkCardBg)
+                                .clip(RoundedCornerShape(10.dp))
+                                .background(if (isAdded) Color(0x18FFFFFF) else DarkCardBg)
                                 .border(
-                                    1.dp,
-                                    if (isAdded) AccentEmerald.copy(alpha = 0.5f) else DarkCardBorder,
-                                    RoundedCornerShape(8.dp)
+                                    0.6.dp,
+                                    if (isAdded) Color(0x40FFFFFF) else DarkCardBorder,
+                                    RoundedCornerShape(10.dp)
                                 )
                                 .clickable {
                                     if (!isAdded) {
@@ -371,28 +377,28 @@ fun SearchLocationsScreen(
                             color = Color.Transparent
                         ) {
                             Row(verticalAlignment = Alignment.CenterVertically) {
-                                Text(city.flagEmoji, fontSize = 14.sp)
+                                Text(city.flagEmoji, fontSize = 13.sp)
                                 Spacer(modifier = Modifier.width(5.dp))
                                 Text(
                                     text = city.name,
                                     style = MaterialTheme.typography.labelMedium,
                                     color = TextPrimary,
-                                    fontWeight = FontWeight.SemiBold
+                                    fontWeight = FontWeight.Medium
                                 )
                                 Spacer(modifier = Modifier.width(5.dp))
                                 if (isAdded) {
                                     Icon(
                                         imageVector = Icons.Default.Check,
                                         contentDescription = "Added",
-                                        tint = AccentEmerald,
-                                        modifier = Modifier.size(13.dp)
+                                        tint = TextPrimary,
+                                        modifier = Modifier.size(12.dp)
                                     )
                                 } else {
                                     Icon(
                                         imageVector = Icons.Default.Add,
                                         contentDescription = "Add",
-                                        tint = AccentCyan,
-                                        modifier = Modifier.size(13.dp)
+                                        tint = TextSecondary,
+                                        modifier = Modifier.size(12.dp)
                                     )
                                 }
                             }

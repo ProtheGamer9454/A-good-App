@@ -2,7 +2,9 @@ package com.example.ui.viewmodel
 
 import com.example.data.model.GeoLocationResult
 import com.example.data.model.LocationEntity
+import com.example.data.model.WeatherAlert
 import com.example.data.repository.LocationWeatherDetail
+import com.example.data.repository.QuickWeatherSnapshot
 
 enum class TempUnit(val symbol: String, val label: String) {
     CELSIUS("°C", "Celsius"),
@@ -22,9 +24,11 @@ enum class WindUnit(val symbol: String, val label: String) {
 
 enum class NavigationTab(val title: String) {
     WEATHER("Weather"),
+    STATE_WEATHER("Country & States"),
+    TIME_ZONES("All Time Zones"),
     WORLD_CLOCKS("World Clocks"),
-    TIME_CONVERTER("Time Converter"),
-    SEARCH("Add Places"),
+    TIME_CONVERTER("Time Travel"),
+    SEARCH("Search"),
     SETTINGS("Settings")
 }
 
@@ -39,7 +43,7 @@ data class WeatherUiState(
     
     // Time & World Clock state
     val currentTimeMillis: Long = System.currentTimeMillis(),
-    val timeTravelHourOffset: Int = 0, // -12 to +12 or 0-23
+    val timeTravelHourOffset: Int = 0,
     val isTimeTravelActive: Boolean = false,
     
     // Search state
@@ -47,6 +51,24 @@ data class WeatherUiState(
     val searchResults: List<GeoLocationResult> = emptyList(),
     val isSearching: Boolean = false,
     val isAddingLocation: Boolean = false,
+
+    // Country & State Weather explorer
+    val selectedCountryId: String = "US",
+    val selectedContinent: String = "All Continents",
+    val countrySearchQuery: String = "",
+    val stateSearchQuery: String = "",
+    val stateWeatherCache: Map<String, QuickWeatherSnapshot> = emptyMap(),
+    val isLoadingStateWeather: Boolean = false,
+
+    // Time Zone directory
+    val timeZoneSearchQuery: String = "",
+    val selectedTimeZoneRegion: String = "All Zones",
+
+    // Severe Weather Alerts & Notification System
+    val activeAlerts: List<WeatherAlert> = emptyList(),
+    val severeAlertsEnabled: Boolean = true,
+    val isAlertCenterOpen: Boolean = false,
+    val selectedAlertForDetail: WeatherAlert? = null,
 
     // Settings
     val tempUnit: TempUnit = TempUnit.CELSIUS,

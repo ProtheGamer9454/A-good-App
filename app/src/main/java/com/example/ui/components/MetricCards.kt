@@ -1,6 +1,5 @@
 package com.example.ui.components
 
-import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
@@ -8,22 +7,20 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Air
 import androidx.compose.material.icons.filled.Compress
 import androidx.compose.material.icons.filled.Navigation
 import androidx.compose.material.icons.filled.Thermostat
+import androidx.compose.material.icons.filled.Water
 import androidx.compose.material.icons.filled.WbSunny
 import androidx.compose.material.icons.filled.WbTwilight
-import androidx.compose.material.icons.filled.Water
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
@@ -33,11 +30,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.rotate
-import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.StrokeCap
-import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -81,14 +74,14 @@ fun WeatherMetricsGrid(
             // Feels Like
             MetricTile(
                 modifier = Modifier.weight(1f),
-                title = "Feels Like",
+                title = "FEELS LIKE",
                 icon = Icons.Default.Thermostat,
-                iconTint = AccentOrange,
+                iconTint = TextSecondary,
                 value = formatTemp(current?.apparentTemperature ?: current?.temperature ?: 0.0),
                 subtitle = when {
-                    (current?.apparentTemperature ?: 0.0) < (current?.temperature ?: 0.0) -> "Wind makes it feel cooler"
-                    (current?.apparentTemperature ?: 0.0) > (current?.temperature ?: 0.0) -> "Humidity makes it feel warmer"
-                    else -> "Similar to actual temp"
+                    (current?.apparentTemperature ?: 0.0) < (current?.temperature ?: 0.0) -> "Wind makes it cooler"
+                    (current?.apparentTemperature ?: 0.0) > (current?.temperature ?: 0.0) -> "Humidity makes it warmer"
+                    else -> "Matches temperature"
                 }
             )
 
@@ -110,11 +103,11 @@ fun WeatherMetricsGrid(
 
             MetricTile(
                 modifier = Modifier.weight(1f),
-                title = "UV Index",
+                title = "UV INDEX",
                 icon = Icons.Default.WbSunny,
                 iconTint = uvColor,
                 value = String.format(Locale.US, "%.1f", uv),
-                subtitle = "$uvLevel exposure"
+                subtitle = "$uvLevel level"
             )
         }
 
@@ -131,10 +124,10 @@ fun WeatherMetricsGrid(
             Surface(
                 modifier = Modifier
                     .weight(1f)
-                    .glassmorphicCard(12.dp),
+                    .glassmorphicCard(16.dp),
                 color = DarkCardBg
             ) {
-                Column(modifier = Modifier.padding(12.dp)) {
+                Column(modifier = Modifier.padding(14.dp)) {
                     Row(
                         modifier = Modifier.fillMaxWidth(),
                         verticalAlignment = Alignment.CenterVertically,
@@ -144,14 +137,16 @@ fun WeatherMetricsGrid(
                             Icon(
                                 imageVector = Icons.Default.Air,
                                 contentDescription = "Wind",
-                                tint = AccentCyan,
-                                modifier = Modifier.size(15.dp)
+                                tint = TextSecondary,
+                                modifier = Modifier.size(14.dp)
                             )
                             Spacer(modifier = Modifier.width(6.dp))
                             Text(
-                                text = "Wind",
-                                style = MaterialTheme.typography.labelMedium,
-                                color = TextSecondary
+                                text = "WIND",
+                                style = MaterialTheme.typography.labelSmall,
+                                color = TextSecondary,
+                                fontWeight = FontWeight.SemiBold,
+                                letterSpacing = 0.5.sp
                             )
                         }
 
@@ -161,24 +156,24 @@ fun WeatherMetricsGrid(
                             contentDescription = "Wind direction",
                             tint = AccentCyan,
                             modifier = Modifier
-                                .size(16.dp)
+                                .size(14.dp)
                                 .rotate(windDir.toFloat())
                         )
                     }
 
-                    Spacer(modifier = Modifier.height(8.dp))
+                    Spacer(modifier = Modifier.height(10.dp))
 
                     Text(
                         text = formatWind(windSpeed),
-                        style = MaterialTheme.typography.headlineMedium,
+                        style = MaterialTheme.typography.titleLarge,
                         color = TextPrimary,
-                        fontWeight = FontWeight.Bold
+                        fontWeight = FontWeight.SemiBold
                     )
 
-                    Spacer(modifier = Modifier.height(2.dp))
+                    Spacer(modifier = Modifier.height(3.dp))
 
                     Text(
-                        text = "From $cardinal (${Math.round(windDir)}°)",
+                        text = "$cardinal • ${Math.round(windDir)}°",
                         style = MaterialTheme.typography.bodySmall,
                         color = TextSecondary
                     )
@@ -189,15 +184,15 @@ fun WeatherMetricsGrid(
             val humidity = current?.relativeHumidity ?: 0
             MetricTile(
                 modifier = Modifier.weight(1f),
-                title = "Humidity",
+                title = "HUMIDITY",
                 icon = Icons.Default.Water,
-                iconTint = AccentSkyBlue,
+                iconTint = AccentCyan,
                 value = "$humidity%",
                 subtitle = when {
-                    humidity < 30 -> "Dry air"
+                    humidity < 30 -> "Dry"
                     humidity in 30..60 -> "Comfortable"
                     humidity in 61..80 -> "Humid"
-                    else -> "Very muggy"
+                    else -> "Muggy"
                 }
             )
         }
@@ -211,14 +206,14 @@ fun WeatherMetricsGrid(
             val pressure = current?.surfacePressure ?: 1013.25
             MetricTile(
                 modifier = Modifier.weight(1f),
-                title = "Pressure",
+                title = "PRESSURE",
                 icon = Icons.Default.Compress,
-                iconTint = AccentPurple,
+                iconTint = TextSecondary,
                 value = "${Math.round(pressure)} hPa",
                 subtitle = when {
-                    pressure > 1020 -> "High pressure (Clear)"
-                    pressure < 1005 -> "Low pressure (Stormy)"
-                    else -> "Normal range"
+                    pressure > 1020 -> "High (Clear)"
+                    pressure < 1005 -> "Low (Rainy)"
+                    else -> "Standard"
                 }
             )
 
@@ -229,47 +224,49 @@ fun WeatherMetricsGrid(
             Surface(
                 modifier = Modifier
                     .weight(1f)
-                    .glassmorphicCard(12.dp),
+                    .glassmorphicCard(16.dp),
                 color = DarkCardBg
             ) {
-                Column(modifier = Modifier.padding(12.dp)) {
+                Column(modifier = Modifier.padding(14.dp)) {
                     Row(verticalAlignment = Alignment.CenterVertically) {
                         Icon(
                             imageVector = Icons.Default.WbTwilight,
                             contentDescription = "Sun Cycle",
                             tint = AccentGold,
-                            modifier = Modifier.size(15.dp)
+                            modifier = Modifier.size(14.dp)
                         )
                         Spacer(modifier = Modifier.width(6.dp))
                         Text(
-                            text = "Sun Cycle",
-                            style = MaterialTheme.typography.labelMedium,
-                            color = TextSecondary
+                            text = "SUN CYCLE",
+                            style = MaterialTheme.typography.labelSmall,
+                            color = TextSecondary,
+                            fontWeight = FontWeight.SemiBold,
+                            letterSpacing = 0.5.sp
                         )
                     }
 
-                    Spacer(modifier = Modifier.height(8.dp))
+                    Spacer(modifier = Modifier.height(10.dp))
 
                     Row(
                         modifier = Modifier.fillMaxWidth(),
                         horizontalArrangement = Arrangement.SpaceBetween
                     ) {
                         Column {
-                            Text("Sunrise", style = MaterialTheme.typography.labelSmall, color = TextTertiary)
+                            Text("Rise", style = MaterialTheme.typography.labelSmall, color = TextTertiary)
                             Text(
                                 text = sunriseFormatted,
                                 style = MaterialTheme.typography.bodyMedium,
                                 color = TextPrimary,
-                                fontWeight = FontWeight.Bold
+                                fontWeight = FontWeight.SemiBold
                             )
                         }
                         Column(horizontalAlignment = Alignment.End) {
-                            Text("Sunset", style = MaterialTheme.typography.labelSmall, color = TextTertiary)
+                            Text("Set", style = MaterialTheme.typography.labelSmall, color = TextTertiary)
                             Text(
                                 text = sunsetFormatted,
                                 style = MaterialTheme.typography.bodyMedium,
                                 color = TextPrimary,
-                                fontWeight = FontWeight.Bold
+                                fontWeight = FontWeight.SemiBold
                             )
                         }
                     }
@@ -293,18 +290,18 @@ fun AirQualityCard(
     val (status, color) = when {
         aqi <= 50 -> "Good" to AccentEmerald
         aqi <= 100 -> "Moderate" to AccentGold
-        aqi <= 150 -> "Unhealthy for Sensitive" to AccentOrange
+        aqi <= 150 -> "Unhealthy (Sens.)" to AccentOrange
         aqi <= 200 -> "Unhealthy" to AccentRose
-        else -> "Hazardous" to Color(0xFFA78BFA)
+        else -> "Hazardous" to AccentPurple
     }
 
     Surface(
         modifier = modifier
             .fillMaxWidth()
-            .glassmorphicCard(12.dp),
+            .glassmorphicCard(16.dp),
         color = DarkCardBg
     ) {
-        Column(modifier = Modifier.padding(14.dp)) {
+        Column(modifier = Modifier.padding(16.dp)) {
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween,
@@ -314,35 +311,36 @@ fun AirQualityCard(
                     Icon(
                         imageVector = Icons.Default.Air,
                         contentDescription = "Air Quality",
-                        tint = color,
-                        modifier = Modifier.size(16.dp)
+                        tint = TextSecondary,
+                        modifier = Modifier.size(15.dp)
                     )
                     Spacer(modifier = Modifier.width(8.dp))
                     Text(
-                        text = "Air Quality Index (AQI)",
-                        style = MaterialTheme.typography.titleMedium,
-                        color = TextPrimary,
-                        fontWeight = FontWeight.Bold
+                        text = "AIR QUALITY",
+                        style = MaterialTheme.typography.labelSmall,
+                        color = TextSecondary,
+                        fontWeight = FontWeight.SemiBold,
+                        letterSpacing = 0.5.sp
                     )
                 }
 
                 Box(
                     modifier = Modifier
                         .clip(RoundedCornerShape(6.dp))
-                        .background(color.copy(alpha = 0.2f))
-                        .border(1.dp, color.copy(alpha = 0.4f), RoundedCornerShape(6.dp))
-                        .padding(horizontal = 8.dp, vertical = 3.dp)
+                        .background(color.copy(alpha = 0.15f))
+                        .border(0.6.dp, color.copy(alpha = 0.4f), RoundedCornerShape(6.dp))
+                        .padding(horizontal = 8.dp, vertical = 2.dp)
                 ) {
                     Text(
                         text = status,
                         style = MaterialTheme.typography.labelSmall,
                         color = color,
-                        fontWeight = FontWeight.Bold
+                        fontWeight = FontWeight.SemiBold
                     )
                 }
             }
 
-            Spacer(modifier = Modifier.height(8.dp))
+            Spacer(modifier = Modifier.height(12.dp))
 
             Row(
                 modifier = Modifier.fillMaxWidth(),
@@ -350,59 +348,60 @@ fun AirQualityCard(
             ) {
                 Text(
                     text = "$aqi",
-                    style = MaterialTheme.typography.displaySmall,
+                    style = MaterialTheme.typography.headlineLarge,
                     color = color,
-                    fontWeight = FontWeight.ExtraBold
+                    fontWeight = FontWeight.Bold
                 )
-                Spacer(modifier = Modifier.width(12.dp))
+                Spacer(modifier = Modifier.width(14.dp))
                 Column {
                     Text(
-                        text = "Overall Air Quality Score",
+                        text = "AQI Score",
                         style = MaterialTheme.typography.bodyMedium,
                         color = TextPrimary,
                         fontWeight = FontWeight.SemiBold
                     )
                     Text(
-                        text = if (aqi <= 50) "Air quality is ideal for outdoor activities."
-                        else "Sensitive groups should consider reducing prolonged outdoor exertion.",
+                        text = if (aqi <= 50) "Ideal for outdoor activities."
+                        else "Sensitive groups should limit outdoor exertion.",
                         style = MaterialTheme.typography.bodySmall,
                         color = TextSecondary
                     )
                 }
             }
 
-            Spacer(modifier = Modifier.height(10.dp))
+            Spacer(modifier = Modifier.height(12.dp))
 
             // Pollutants breakdown row
             Row(
                 modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween
+                horizontalArrangement = Arrangement.spacedBy(8.dp)
             ) {
-                PollutantPill(name = "PM2.5", value = airQuality.pm25)
-                PollutantPill(name = "PM10", value = airQuality.pm10)
-                PollutantPill(name = "Ozone", value = airQuality.ozone)
-                PollutantPill(name = "NO₂", value = airQuality.nitrogenDioxide)
+                PollutantPill(name = "PM2.5", value = airQuality.pm25, modifier = Modifier.weight(1f))
+                PollutantPill(name = "PM10", value = airQuality.pm10, modifier = Modifier.weight(1f))
+                PollutantPill(name = "Ozone", value = airQuality.ozone, modifier = Modifier.weight(1f))
+                PollutantPill(name = "NO₂", value = airQuality.nitrogenDioxide, modifier = Modifier.weight(1f))
             }
         }
     }
 }
 
 @Composable
-private fun PollutantPill(name: String, value: Double?) {
+private fun PollutantPill(name: String, value: Double?, modifier: Modifier = Modifier) {
     Column(
-        modifier = Modifier
-            .clip(RoundedCornerShape(8.dp))
-            .background(Color(0xFF0F1728))
-            .border(1.dp, DarkCardBorder, RoundedCornerShape(8.dp))
-            .padding(horizontal = 10.dp, vertical = 6.dp),
+        modifier = modifier
+            .clip(RoundedCornerShape(10.dp))
+            .background(Color(0x0AFFFFFF))
+            .border(0.6.dp, DarkCardBorder, RoundedCornerShape(10.dp))
+            .padding(horizontal = 8.dp, vertical = 6.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Text(name, style = MaterialTheme.typography.labelSmall, color = TextTertiary, fontSize = 10.sp)
+        Spacer(modifier = Modifier.height(2.dp))
         Text(
-            text = if (value != null) "${Math.round(value)} µg" else "--",
+            text = if (value != null) "${Math.round(value)}" else "--",
             style = MaterialTheme.typography.labelMedium,
             color = TextPrimary,
-            fontWeight = FontWeight.Bold
+            fontWeight = FontWeight.SemiBold
         )
     }
 }
@@ -417,35 +416,37 @@ private fun MetricTile(
     modifier: Modifier = Modifier
 ) {
     Surface(
-        modifier = modifier.glassmorphicCard(12.dp),
+        modifier = modifier.glassmorphicCard(16.dp),
         color = DarkCardBg
     ) {
-        Column(modifier = Modifier.padding(12.dp)) {
+        Column(modifier = Modifier.padding(14.dp)) {
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Icon(
                     imageVector = icon,
                     contentDescription = title,
                     tint = iconTint,
-                    modifier = Modifier.size(15.dp)
+                    modifier = Modifier.size(14.dp)
                 )
                 Spacer(modifier = Modifier.width(6.dp))
                 Text(
                     text = title,
-                    style = MaterialTheme.typography.labelMedium,
-                    color = TextSecondary
+                    style = MaterialTheme.typography.labelSmall,
+                    color = TextSecondary,
+                    fontWeight = FontWeight.SemiBold,
+                    letterSpacing = 0.5.sp
                 )
             }
 
-            Spacer(modifier = Modifier.height(6.dp))
+            Spacer(modifier = Modifier.height(10.dp))
 
             Text(
                 text = value,
-                style = MaterialTheme.typography.headlineMedium,
+                style = MaterialTheme.typography.titleLarge,
                 color = TextPrimary,
-                fontWeight = FontWeight.Bold
+                fontWeight = FontWeight.SemiBold
             )
 
-            Spacer(modifier = Modifier.height(2.dp))
+            Spacer(modifier = Modifier.height(3.dp))
 
             Text(
                 text = subtitle,
@@ -472,3 +473,4 @@ private fun formatSunTime(isoTime: String): String {
         isoTime.substringAfter("T").take(5)
     }
 }
+

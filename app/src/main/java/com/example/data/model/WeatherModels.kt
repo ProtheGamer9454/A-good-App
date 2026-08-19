@@ -1,5 +1,15 @@
 package com.example.data.model
 
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.AcUnit
+import androidx.compose.material.icons.filled.Cloud
+import androidx.compose.material.icons.filled.FilterDrama
+import androidx.compose.material.icons.filled.NightsStay
+import androidx.compose.material.icons.filled.Thunderstorm
+import androidx.compose.material.icons.filled.WaterDrop
+import androidx.compose.material.icons.filled.WbCloudy
+import androidx.compose.material.icons.filled.WbSunny
+import androidx.compose.ui.graphics.vector.ImageVector
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
 
@@ -149,6 +159,18 @@ object WeatherCodeUtil {
         85, 86 -> "🌨️"
         95, 96, 99 -> "⛈️"
         else -> if (isDay) "☀️" else "🌙"
+    }
+
+    fun getWeatherIcon(code: Int, isDay: Boolean = true): ImageVector = when (code) {
+        0 -> if (isDay) Icons.Default.WbSunny else Icons.Default.NightsStay
+        1 -> if (isDay) Icons.Default.WbSunny else Icons.Default.NightsStay
+        2 -> if (isDay) Icons.Default.WbCloudy else Icons.Default.NightsStay
+        3 -> Icons.Default.Cloud
+        45, 48 -> Icons.Default.FilterDrama
+        51, 53, 55, 61, 63, 65, 80, 81, 82 -> Icons.Default.WaterDrop
+        56, 57, 66, 67, 71, 73, 75, 77, 85, 86 -> Icons.Default.AcUnit
+        95, 96, 99 -> Icons.Default.Thunderstorm
+        else -> if (isDay) Icons.Default.WbSunny else Icons.Default.NightsStay
     }
 
     fun isPrecipitating(code: Int): Boolean {

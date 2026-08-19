@@ -37,11 +37,14 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.example.ui.theme.AccentCyan
+import com.example.ui.theme.DarkBackground
 import com.example.ui.theme.DarkCardBorder
 import com.example.ui.theme.DarkSurface
 import com.example.ui.theme.TextPrimary
 import com.example.ui.theme.TextSecondary
+import com.example.ui.theme.TextTertiary
 import com.example.ui.viewmodel.NavigationTab
 import com.example.ui.viewmodel.WeatherUiState
 import com.example.ui.viewmodel.WeatherViewModel
@@ -59,13 +62,14 @@ fun MainScreen(
             .windowInsetsPadding(WindowInsets.safeDrawing),
         bottomBar = {
             NavigationBar(
-                containerColor = DarkSurface.copy(alpha = 0.95f),
+                containerColor = DarkBackground.copy(alpha = 0.94f),
                 contentColor = TextPrimary,
+                tonalElevation = 0.dp,
                 modifier = Modifier
                     .fillMaxWidth()
                     .border(
-                        width = 1.dp,
-                        color = DarkCardBorder.copy(alpha = 0.5f)
+                        width = 0.6.dp,
+                        color = DarkCardBorder.copy(alpha = 0.4f)
                     )
             ) {
                 // Tab 1: Weather Details
@@ -77,21 +81,22 @@ fun MainScreen(
                         Icon(
                             imageVector = if (weatherSelected) Icons.Filled.Cloud else Icons.Outlined.Cloud,
                             contentDescription = "Weather",
-                            modifier = Modifier.size(24.dp)
+                            modifier = Modifier.size(22.dp)
                         )
                     },
                     label = {
                         Text(
                             text = "Weather",
-                            fontWeight = if (weatherSelected) FontWeight.Bold else FontWeight.Normal
+                            fontSize = 11.sp,
+                            fontWeight = if (weatherSelected) FontWeight.SemiBold else FontWeight.Normal
                         )
                     },
                     colors = NavigationBarItemDefaults.colors(
-                        selectedIconColor = AccentCyan,
-                        selectedTextColor = AccentCyan,
-                        indicatorColor = AccentCyan.copy(alpha = 0.2f),
-                        unselectedIconColor = TextSecondary,
-                        unselectedTextColor = TextSecondary
+                        selectedIconColor = TextPrimary,
+                        selectedTextColor = TextPrimary,
+                        indicatorColor = Color(0x20FFFFFF),
+                        unselectedIconColor = TextTertiary,
+                        unselectedTextColor = TextTertiary
                     ),
                     modifier = Modifier.testTag("nav_tab_weather")
                 )
@@ -105,21 +110,22 @@ fun MainScreen(
                         Icon(
                             imageVector = if (clocksSelected) Icons.Filled.Public else Icons.Outlined.Public,
                             contentDescription = "World Clocks",
-                            modifier = Modifier.size(24.dp)
+                            modifier = Modifier.size(22.dp)
                         )
                     },
                     label = {
                         Text(
-                            text = "World Clocks",
-                            fontWeight = if (clocksSelected) FontWeight.Bold else FontWeight.Normal
+                            text = "Clocks",
+                            fontSize = 11.sp,
+                            fontWeight = if (clocksSelected) FontWeight.SemiBold else FontWeight.Normal
                         )
                     },
                     colors = NavigationBarItemDefaults.colors(
-                        selectedIconColor = AccentCyan,
-                        selectedTextColor = AccentCyan,
-                        indicatorColor = AccentCyan.copy(alpha = 0.2f),
-                        unselectedIconColor = TextSecondary,
-                        unselectedTextColor = TextSecondary
+                        selectedIconColor = TextPrimary,
+                        selectedTextColor = TextPrimary,
+                        indicatorColor = Color(0x20FFFFFF),
+                        unselectedIconColor = TextTertiary,
+                        unselectedTextColor = TextTertiary
                     ),
                     modifier = Modifier.testTag("nav_tab_world_clocks")
                 )
@@ -133,21 +139,22 @@ fun MainScreen(
                         Icon(
                             imageVector = if (searchSelected) Icons.Filled.Search else Icons.Outlined.Search,
                             contentDescription = "Search",
-                            modifier = Modifier.size(24.dp)
+                            modifier = Modifier.size(22.dp)
                         )
                     },
                     label = {
                         Text(
                             text = "Explore",
-                            fontWeight = if (searchSelected) FontWeight.Bold else FontWeight.Normal
+                            fontSize = 11.sp,
+                            fontWeight = if (searchSelected) FontWeight.SemiBold else FontWeight.Normal
                         )
                     },
                     colors = NavigationBarItemDefaults.colors(
-                        selectedIconColor = AccentCyan,
-                        selectedTextColor = AccentCyan,
-                        indicatorColor = AccentCyan.copy(alpha = 0.2f),
-                        unselectedIconColor = TextSecondary,
-                        unselectedTextColor = TextSecondary
+                        selectedIconColor = TextPrimary,
+                        selectedTextColor = TextPrimary,
+                        indicatorColor = Color(0x20FFFFFF),
+                        unselectedIconColor = TextTertiary,
+                        unselectedTextColor = TextTertiary
                     ),
                     modifier = Modifier.testTag("nav_tab_search")
                 )
@@ -161,21 +168,22 @@ fun MainScreen(
                         Icon(
                             imageVector = if (settingsSelected) Icons.Filled.Settings else Icons.Outlined.Settings,
                             contentDescription = "Settings",
-                            modifier = Modifier.size(24.dp)
+                            modifier = Modifier.size(22.dp)
                         )
                     },
                     label = {
                         Text(
                             text = "Settings",
-                            fontWeight = if (settingsSelected) FontWeight.Bold else FontWeight.Normal
+                            fontSize = 11.sp,
+                            fontWeight = if (settingsSelected) FontWeight.SemiBold else FontWeight.Normal
                         )
                     },
                     colors = NavigationBarItemDefaults.colors(
-                        selectedIconColor = AccentCyan,
-                        selectedTextColor = AccentCyan,
-                        indicatorColor = AccentCyan.copy(alpha = 0.2f),
-                        unselectedIconColor = TextSecondary,
-                        unselectedTextColor = TextSecondary
+                        selectedIconColor = TextPrimary,
+                        selectedTextColor = TextPrimary,
+                        indicatorColor = Color(0x20FFFFFF),
+                        unselectedIconColor = TextTertiary,
+                        unselectedTextColor = TextTertiary
                     ),
                     modifier = Modifier.testTag("nav_tab_settings")
                 )

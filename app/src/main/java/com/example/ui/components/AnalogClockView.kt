@@ -10,15 +10,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import com.example.ui.theme.AccentCyan
-import com.example.ui.theme.AccentGold
-import com.example.ui.theme.AccentSkyBlue
 import java.time.ZonedDateTime
 import kotlin.math.cos
 import kotlin.math.sin
@@ -44,36 +40,31 @@ fun AnalogClockView(
             .aspectRatio(1f),
         contentAlignment = Alignment.Center
     ) {
-        Canvas(modifier = Modifier.fillMaxSize().padding(6.dp)) {
+        Canvas(modifier = Modifier.fillMaxSize().padding(4.dp)) {
             val center = Offset(this.size.width / 2, this.size.height / 2)
             val radius = this.size.width / 2
 
             // Dial background circle
             drawCircle(
-                brush = Brush.radialGradient(
-                    colors = if (isDay) listOf(Color(0xFF132A4A), Color(0xFF0C192E))
-                    else listOf(Color(0xFF16192E), Color(0xFF090D18)),
-                    center = center,
-                    radius = radius
-                ),
+                color = Color(0x0FFFFFFF),
                 radius = radius,
                 center = center
             )
 
             // Outer dial rim
             drawCircle(
-                color = if (isDay) AccentSkyBlue.copy(alpha = 0.3f) else AccentCyan.copy(alpha = 0.2f),
+                color = Color(0x20FFFFFF),
                 radius = radius,
                 center = center,
-                style = Stroke(width = 2.dp.toPx())
+                style = Stroke(width = 0.8.dp.toPx())
             )
 
-            // Hour tick marks
+            // Hour tick marks (minimal 4 main ticks or 12 dots)
             for (i in 0 until 12) {
                 val angle = Math.toRadians((i * 30 - 90).toDouble())
                 val isMajor = i % 3 == 0
-                val tickInnerRadius = radius - (if (isMajor) 10.dp.toPx() else 6.dp.toPx())
-                val tickOuterRadius = radius - 3.dp.toPx()
+                val tickInnerRadius = radius - (if (isMajor) 6.dp.toPx() else 3.dp.toPx())
+                val tickOuterRadius = radius - 1.5.dp.toPx()
 
                 val startX = (center.x + tickInnerRadius * cos(angle)).toFloat()
                 val startY = (center.y + tickInnerRadius * sin(angle)).toFloat()
@@ -81,10 +72,10 @@ fun AnalogClockView(
                 val endY = (center.y + tickOuterRadius * sin(angle)).toFloat()
 
                 drawLine(
-                    color = if (isMajor) (if (isDay) AccentGold else AccentCyan) else Color.White.copy(alpha = 0.3f),
+                    color = if (isMajor) Color.White.copy(alpha = 0.6f) else Color.White.copy(alpha = 0.2f),
                     start = Offset(startX, startY),
                     end = Offset(endX, endY),
-                    strokeWidth = if (isMajor) 2.5.dp.toPx() else 1.2.dp.toPx(),
+                    strokeWidth = if (isMajor) 1.5.dp.toPx() else 0.8.dp.toPx(),
                     cap = StrokeCap.Round
                 )
             }
@@ -97,54 +88,50 @@ fun AnalogClockView(
                 (center.y + hourLength * sin(hourRad)).toFloat()
             )
             drawLine(
-                color = Color.White,
+                color = Color.White.copy(alpha = 0.9f),
                 start = center,
                 end = hourEnd,
-                strokeWidth = 3.5.dp.toPx(),
+                strokeWidth = 2.dp.toPx(),
                 cap = StrokeCap.Round
             )
 
             // Minute Hand
             val minRad = Math.toRadians(minuteAngle.toDouble())
-            val minLength = radius * 0.75f
+            val minLength = radius * 0.74f
             val minEnd = Offset(
                 (center.x + minLength * cos(minRad)).toFloat(),
                 (center.y + minLength * sin(minRad)).toFloat()
             )
             drawLine(
-                color = AccentCyan,
+                color = Color.White.copy(alpha = 0.8f),
                 start = center,
                 end = minEnd,
-                strokeWidth = 2.5.dp.toPx(),
+                strokeWidth = 1.5.dp.toPx(),
                 cap = StrokeCap.Round
             )
 
             // Second Hand
             val secRad = Math.toRadians(secondAngle.toDouble())
-            val secLength = radius * 0.85f
+            val secLength = radius * 0.82f
             val secEnd = Offset(
                 (center.x + secLength * cos(secRad)).toFloat(),
                 (center.y + secLength * sin(secRad)).toFloat()
             )
             drawLine(
-                color = if (isDay) AccentGold else AccentSkyBlue,
+                color = if (isDay) Color(0xFFF59E0B) else Color(0xFF38BDF8),
                 start = center,
                 end = secEnd,
-                strokeWidth = 1.5.dp.toPx(),
+                strokeWidth = 1.dp.toPx(),
                 cap = StrokeCap.Round
             )
 
             // Center Pin
             drawCircle(
-                color = if (isDay) AccentGold else AccentCyan,
-                radius = 4.dp.toPx(),
-                center = center
-            )
-            drawCircle(
-                color = Color(0xFF090D18),
+                color = Color.White,
                 radius = 2.dp.toPx(),
                 center = center
             )
         }
     }
 }
+

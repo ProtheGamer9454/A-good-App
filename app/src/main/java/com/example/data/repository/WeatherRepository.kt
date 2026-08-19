@@ -239,4 +239,41 @@ class WeatherRepository(private val weatherDao: WeatherDao) {
         weatherDao.clearCurrentLocationFlags()
         weatherDao.updateLocation(location.copy(isCurrentLocation = true))
     }
+
+    suspend fun fetchQuickWeather(lat: Double, lon: Double, timezone: String): QuickWeatherSnapshot? = withContext(Dispatchers.IO) {
+        try {
+            val tzParam = if (timezone.isNotBlank()) timezone else "auto"
+            val resp = ApiClient.weatherApi.getForecast(latitude = lat, longitude = lon, timezone = tzParam)
+            val current = resp.current ?: return@withContext null
+            val code = current.weatherCode
+            val condition = WeatherCodeUtil.getCondition(code)
+            val daily = resp.daily
+            val minTemp = daily?.temperatureMin?.firstOrNull()
+            val maxTemp = daily?.temperatureMax?.firstOrNull()
+            QuickWeatherSnapshot(
+                tempCelsius = current.temperature ?: 0.0,
+                weatherCode = code,
+                condition = condition,
+                isDay = current.isDay == 1,
+                humidity = current.relativeHumidity ?: 0,
+                windSpeed = current.windSpeed ?: 0.0,
+                minTemp = minTemp,
+                maxTemp = maxTemp
+            )
+        } catch (e: Exception) {
+            Log.e("WeatherRepository", "Quick weather fetch failed for ($lat,$lon): ${e.message}")
+            null
+        }
+    }
 }
+
+data class QuickWeatherSnapshot(
+    val tempCelsius: Double,
+    val weatherCode: Int,
+    val condition: String,
+    val isDay: Boolean,
+    val humidity: Int,
+    val windSpeed: Double,
+    val minTemp: Double?,
+    val maxTemp: Double?
+)

@@ -27,7 +27,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -35,7 +34,6 @@ import androidx.compose.ui.unit.sp
 import com.example.data.model.HourlyForecastItem
 import com.example.data.model.WeatherCodeUtil
 import com.example.ui.theme.AccentCyan
-import com.example.ui.theme.AccentSkyBlue
 import com.example.ui.theme.DarkCardBg
 import com.example.ui.theme.DarkCardBorder
 import com.example.ui.theme.TextPrimary
@@ -51,32 +49,33 @@ fun HourlyForecastRow(
     Surface(
         modifier = modifier
             .fillMaxWidth()
-            .glassmorphicCard(14.dp),
+            .glassmorphicCard(18.dp),
         color = DarkCardBg
     ) {
-        Column(modifier = Modifier.padding(vertical = 12.dp)) {
+        Column(modifier = Modifier.padding(vertical = 14.dp)) {
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(horizontal = 14.dp),
+                    .padding(horizontal = 16.dp),
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Icon(
                     imageVector = Icons.Default.Schedule,
                     contentDescription = "Hourly Forecast",
-                    tint = AccentCyan,
-                    modifier = Modifier.size(16.dp)
+                    tint = TextSecondary,
+                    modifier = Modifier.size(15.dp)
                 )
-                Spacer(modifier = Modifier.width(6.dp))
+                Spacer(modifier = Modifier.width(8.dp))
                 Text(
-                    text = "Hourly Forecast (48 Hours)",
-                    style = MaterialTheme.typography.titleMedium,
-                    color = TextPrimary,
-                    fontWeight = FontWeight.Bold
+                    text = "HOURLY FORECAST",
+                    style = MaterialTheme.typography.labelSmall,
+                    color = TextSecondary,
+                    fontWeight = FontWeight.SemiBold,
+                    letterSpacing = 1.sp
                 )
             }
 
-            Spacer(modifier = Modifier.height(10.dp))
+            Spacer(modifier = Modifier.height(12.dp))
 
             if (hourlyList.isEmpty()) {
                 Box(
@@ -93,8 +92,8 @@ fun HourlyForecastRow(
                 }
             } else {
                 LazyRow(
-                    contentPadding = PaddingValues(horizontal = 14.dp),
-                    horizontalArrangement = Arrangement.spacedBy(8.dp)
+                    contentPadding = PaddingValues(horizontal = 16.dp),
+                    horizontalArrangement = Arrangement.spacedBy(10.dp)
                 ) {
                     itemsIndexed(hourlyList) { index, item ->
                         val isNow = index == 0
@@ -102,19 +101,13 @@ fun HourlyForecastRow(
 
                         Column(
                             modifier = Modifier
-                                .width(68.dp)
-                                .clip(RoundedCornerShape(10.dp))
-                                .background(
-                                    if (isNow) Brush.verticalGradient(
-                                        listOf(Color(0x3338BDF8), Color(0x1138BDF8))
-                                    ) else Brush.verticalGradient(
-                                        listOf(Color(0x16FFFFFF), Color(0x06FFFFFF))
-                                    )
-                                )
+                                .width(64.dp)
+                                .clip(RoundedCornerShape(14.dp))
+                                .background(if (isNow) Color(0x18FFFFFF) else Color(0x08FFFFFF))
                                 .border(
-                                    1.dp,
-                                    if (isNow) AccentCyan.copy(alpha = 0.5f) else DarkCardBorder,
-                                    RoundedCornerShape(10.dp)
+                                    0.8.dp,
+                                    if (isNow) Color(0x40FFFFFF) else DarkCardBorder,
+                                    RoundedCornerShape(14.dp)
                                 )
                                 .padding(vertical = 10.dp, horizontal = 4.dp),
                             horizontalAlignment = Alignment.CenterHorizontally
@@ -122,43 +115,43 @@ fun HourlyForecastRow(
                             Text(
                                 text = if (isNow) "Now" else item.displayHour,
                                 style = MaterialTheme.typography.labelSmall,
-                                color = if (isNow) AccentCyan else TextSecondary,
+                                color = if (isNow) TextPrimary else TextSecondary,
                                 fontWeight = if (isNow) FontWeight.Bold else FontWeight.Normal
                             )
 
-                            Spacer(modifier = Modifier.height(4.dp))
+                            Spacer(modifier = Modifier.height(6.dp))
 
                             Text(
                                 text = emoji,
                                 fontSize = 20.sp
                             )
 
-                            Spacer(modifier = Modifier.height(4.dp))
+                            Spacer(modifier = Modifier.height(6.dp))
 
                             Text(
                                 text = formatTemp(item.tempC),
                                 style = MaterialTheme.typography.bodyMedium,
                                 color = TextPrimary,
-                                fontWeight = FontWeight.Bold
+                                fontWeight = FontWeight.SemiBold
                             )
 
-                            if (item.precipitationProb > 10) {
-                                Spacer(modifier = Modifier.height(3.dp))
+                            if (item.precipitationProb > 15) {
+                                Spacer(modifier = Modifier.height(4.dp))
                                 Row(
                                     verticalAlignment = Alignment.CenterVertically
                                 ) {
                                     Icon(
                                         imageVector = Icons.Default.WaterDrop,
                                         contentDescription = "Rain chance",
-                                        tint = AccentSkyBlue,
-                                        modifier = Modifier.size(10.dp)
+                                        tint = AccentCyan,
+                                        modifier = Modifier.size(9.dp)
                                     )
                                     Text(
                                         text = "${item.precipitationProb}%",
                                         style = MaterialTheme.typography.labelSmall,
-                                        color = AccentSkyBlue,
+                                        color = AccentCyan,
                                         fontSize = 10.sp,
-                                        fontWeight = FontWeight.SemiBold
+                                        fontWeight = FontWeight.Medium
                                     )
                                 }
                             }
@@ -169,3 +162,4 @@ fun HourlyForecastRow(
         }
     }
 }
+

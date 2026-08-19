@@ -76,7 +76,7 @@ fun SettingsScreen(
                 .fillMaxSize()
                 .padding(horizontal = 16.dp),
             contentPadding = PaddingValues(top = 16.dp, bottom = 96.dp),
-            verticalArrangement = Arrangement.spacedBy(16.dp)
+            verticalArrangement = Arrangement.spacedBy(14.dp)
         ) {
             // Title
             item {
@@ -84,19 +84,19 @@ fun SettingsScreen(
                     Icon(
                         imageVector = Icons.Default.Settings,
                         contentDescription = "Settings",
-                        tint = AccentCyan,
-                        modifier = Modifier.size(24.dp)
+                        tint = TextSecondary,
+                        modifier = Modifier.size(20.dp)
                     )
                     Spacer(modifier = Modifier.width(10.dp))
                     Column {
                         Text(
-                            text = "Preferences & Units",
-                            style = MaterialTheme.typography.headlineSmall,
+                            text = "Settings",
+                            style = MaterialTheme.typography.titleLarge,
                             color = TextPrimary,
-                            fontWeight = FontWeight.Bold
+                            fontWeight = FontWeight.SemiBold
                         )
                         Text(
-                            text = "Customize temperature, clock format, and saved cities",
+                            text = "Units, clock format, and saved places",
                             style = MaterialTheme.typography.bodySmall,
                             color = TextSecondary
                         )
@@ -117,15 +117,15 @@ fun SettingsScreen(
                             Icon(
                                 imageVector = Icons.Default.Thermostat,
                                 contentDescription = "Temperature",
-                                tint = AccentGold,
-                                modifier = Modifier.size(16.dp)
+                                tint = TextSecondary,
+                                modifier = Modifier.size(15.dp)
                             )
                             Spacer(modifier = Modifier.width(6.dp))
                             Text(
                                 text = "Temperature Unit",
-                                style = MaterialTheme.typography.titleMedium,
+                                style = MaterialTheme.typography.titleSmall,
                                 color = TextPrimary,
-                                fontWeight = FontWeight.Bold
+                                fontWeight = FontWeight.SemiBold
                             )
                         }
 
@@ -140,11 +140,11 @@ fun SettingsScreen(
                                 Surface(
                                     modifier = Modifier
                                         .weight(1f)
-                                        .clip(RoundedCornerShape(8.dp))
-                                        .background(if (isSelected) AccentCyan.copy(alpha = 0.2f) else Color(0xFF0F1728))
-                                        .border(1.dp, if (isSelected) AccentCyan else DarkCardBorder, RoundedCornerShape(8.dp))
+                                        .clip(RoundedCornerShape(10.dp))
+                                        .background(if (isSelected) Color(0x20FFFFFF) else Color(0x0AFFFFFF))
+                                        .border(0.6.dp, if (isSelected) Color(0x60FFFFFF) else DarkCardBorder, RoundedCornerShape(10.dp))
                                         .clickable { viewModel.setTempUnit(unit) }
-                                        .padding(vertical = 10.dp),
+                                        .padding(vertical = 9.dp),
                                     color = Color.Transparent
                                 ) {
                                     Row(
@@ -155,8 +155,8 @@ fun SettingsScreen(
                                         Text(
                                             text = "${unit.label} (${unit.symbol})",
                                             style = MaterialTheme.typography.bodyMedium,
-                                            color = if (isSelected) AccentCyan else TextPrimary,
-                                            fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Normal
+                                            color = if (isSelected) TextPrimary else TextSecondary,
+                                            fontWeight = if (isSelected) FontWeight.SemiBold else FontWeight.Normal
                                         )
                                     }
                                 }
@@ -179,15 +179,15 @@ fun SettingsScreen(
                             Icon(
                                 imageVector = Icons.Default.Schedule,
                                 contentDescription = "Time Format",
-                                tint = AccentCyan,
-                                modifier = Modifier.size(16.dp)
+                                tint = TextSecondary,
+                                modifier = Modifier.size(15.dp)
                             )
                             Spacer(modifier = Modifier.width(6.dp))
                             Text(
-                                text = "World Clock Format",
-                                style = MaterialTheme.typography.titleMedium,
+                                text = "Clock Format",
+                                style = MaterialTheme.typography.titleSmall,
                                 color = TextPrimary,
-                                fontWeight = FontWeight.Bold
+                                fontWeight = FontWeight.SemiBold
                             )
                         }
 
@@ -202,11 +202,11 @@ fun SettingsScreen(
                                 Surface(
                                     modifier = Modifier
                                         .weight(1f)
-                                        .clip(RoundedCornerShape(8.dp))
-                                        .background(if (isSelected) AccentCyan.copy(alpha = 0.2f) else Color(0xFF0F1728))
-                                        .border(1.dp, if (isSelected) AccentCyan else DarkCardBorder, RoundedCornerShape(8.dp))
+                                        .clip(RoundedCornerShape(10.dp))
+                                        .background(if (isSelected) Color(0x20FFFFFF) else Color(0x0AFFFFFF))
+                                        .border(0.6.dp, if (isSelected) Color(0x60FFFFFF) else DarkCardBorder, RoundedCornerShape(10.dp))
                                         .clickable { viewModel.setTimeFormat(format) }
-                                        .padding(vertical = 10.dp),
+                                        .padding(vertical = 9.dp),
                                     color = Color.Transparent
                                 ) {
                                     Row(
@@ -217,8 +217,8 @@ fun SettingsScreen(
                                         Text(
                                             text = format.label,
                                             style = MaterialTheme.typography.bodyMedium,
-                                            color = if (isSelected) AccentCyan else TextPrimary,
-                                            fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Normal
+                                            color = if (isSelected) TextPrimary else TextSecondary,
+                                            fontWeight = if (isSelected) FontWeight.SemiBold else FontWeight.Normal
                                         )
                                     }
                                 }
@@ -241,15 +241,15 @@ fun SettingsScreen(
                             Icon(
                                 imageVector = Icons.Default.Air,
                                 contentDescription = "Wind Speed",
-                                tint = AccentSkyBlue,
-                                modifier = Modifier.size(16.dp)
+                                tint = TextSecondary,
+                                modifier = Modifier.size(15.dp)
                             )
                             Spacer(modifier = Modifier.width(6.dp))
                             Text(
                                 text = "Wind Speed Unit",
-                                style = MaterialTheme.typography.titleMedium,
+                                style = MaterialTheme.typography.titleSmall,
                                 color = TextPrimary,
-                                fontWeight = FontWeight.Bold
+                                fontWeight = FontWeight.SemiBold
                             )
                         }
 
@@ -264,9 +264,9 @@ fun SettingsScreen(
                                 Surface(
                                     modifier = Modifier
                                         .weight(1f)
-                                        .clip(RoundedCornerShape(8.dp))
-                                        .background(if (isSelected) AccentCyan.copy(alpha = 0.2f) else Color(0xFF0F1728))
-                                        .border(1.dp, if (isSelected) AccentCyan else DarkCardBorder, RoundedCornerShape(8.dp))
+                                        .clip(RoundedCornerShape(10.dp))
+                                        .background(if (isSelected) Color(0x20FFFFFF) else Color(0x0AFFFFFF))
+                                        .border(0.6.dp, if (isSelected) Color(0x60FFFFFF) else DarkCardBorder, RoundedCornerShape(10.dp))
                                         .clickable { viewModel.setWindUnit(unit) }
                                         .padding(vertical = 8.dp),
                                     color = Color.Transparent
@@ -278,8 +278,8 @@ fun SettingsScreen(
                                         Text(
                                             text = unit.symbol,
                                             style = MaterialTheme.typography.labelLarge,
-                                            color = if (isSelected) AccentCyan else TextPrimary,
-                                            fontWeight = FontWeight.Bold
+                                            color = if (isSelected) TextPrimary else TextSecondary,
+                                            fontWeight = if (isSelected) FontWeight.SemiBold else FontWeight.Normal
                                         )
                                     }
                                 }
@@ -299,10 +299,11 @@ fun SettingsScreen(
                 ) {
                     Column(modifier = Modifier.padding(14.dp)) {
                         Text(
-                            text = "Manage Saved Cities (${uiState.savedLocations.size})",
-                            style = MaterialTheme.typography.titleMedium,
-                            color = TextPrimary,
-                            fontWeight = FontWeight.Bold
+                            text = "SAVED PLACES (${uiState.savedLocations.size})",
+                            style = MaterialTheme.typography.labelSmall,
+                            color = TextSecondary,
+                            fontWeight = FontWeight.SemiBold,
+                            letterSpacing = 0.5.sp
                         )
                         Spacer(modifier = Modifier.height(10.dp))
 
@@ -329,7 +330,7 @@ fun SettingsScreen(
                                             text = loc.name,
                                             style = MaterialTheme.typography.bodyMedium,
                                             color = TextPrimary,
-                                            fontWeight = FontWeight.SemiBold
+                                            fontWeight = FontWeight.Medium
                                         )
                                     }
                                     Text(
@@ -362,7 +363,7 @@ fun SettingsScreen(
                                             Icon(
                                                 imageVector = Icons.Default.Delete,
                                                 contentDescription = "Delete",
-                                                tint = AccentRose.copy(alpha = 0.8f),
+                                                tint = TextTertiary,
                                                 modifier = Modifier.size(16.dp)
                                             )
                                         }
@@ -373,7 +374,7 @@ fun SettingsScreen(
                             if (idx < uiState.savedLocations.lastIndex) {
                                 HorizontalDivider(
                                     color = DarkCardBorder.copy(alpha = 0.5f),
-                                    thickness = 0.8.dp
+                                    thickness = 0.6.dp
                                 )
                             }
                         }
@@ -396,19 +397,19 @@ fun SettingsScreen(
                         Icon(
                             imageVector = Icons.Default.Info,
                             contentDescription = "About",
-                            tint = AccentCyan,
-                            modifier = Modifier.size(20.dp)
+                            tint = TextSecondary,
+                            modifier = Modifier.size(18.dp)
                         )
                         Spacer(modifier = Modifier.width(10.dp))
                         Column {
                             Text(
-                                text = "World Weather & Live Timezones",
+                                text = "A good App",
                                 style = MaterialTheme.typography.titleSmall,
                                 color = TextPrimary,
-                                fontWeight = FontWeight.Bold
+                                fontWeight = FontWeight.SemiBold
                             )
                             Text(
-                                text = "High Density precision meteorological dashboard with global celestial sync.",
+                                text = "Minimalist world weather & live timezones dashboard.",
                                 style = MaterialTheme.typography.bodySmall,
                                 color = TextSecondary
                             )

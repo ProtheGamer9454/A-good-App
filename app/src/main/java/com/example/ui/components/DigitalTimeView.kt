@@ -10,7 +10,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.DarkMode
@@ -26,9 +25,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.ui.theme.AccentCyan
-import com.example.ui.theme.AccentGold
-import com.example.ui.theme.DarkCardBg
 import com.example.ui.theme.DarkCardBorder
 import com.example.ui.theme.TextPrimary
 import com.example.ui.theme.TextSecondary
@@ -68,22 +64,22 @@ fun DigitalTimeView(
             horizontalArrangement = Arrangement.Center,
             modifier = Modifier
                 .clip(RoundedCornerShape(100.dp))
-                .background(if (isDay) Color(0x33FFB703) else Color(0x3300E5FF))
-                .border(1.dp, if (isDay) Color(0x55FFB703) else Color(0x5500E5FF), RoundedCornerShape(100.dp))
-                .padding(horizontal = 12.dp, vertical = 5.dp)
+                .background(Color(0x10FFFFFF))
+                .border(0.6.dp, DarkCardBorder, RoundedCornerShape(100.dp))
+                .padding(horizontal = 12.dp, vertical = 4.dp)
         ) {
             Icon(
                 imageVector = if (isDay) Icons.Default.LightMode else Icons.Default.DarkMode,
                 contentDescription = if (isDay) "Day" else "Night",
-                tint = if (isDay) AccentGold else AccentCyan,
-                modifier = Modifier.size(15.dp)
+                tint = TextSecondary,
+                modifier = Modifier.size(13.dp)
             )
             Spacer(modifier = Modifier.width(6.dp))
             Text(
                 text = if (isDay) "Daytime" else "Night",
                 style = MaterialTheme.typography.labelSmall,
                 color = TextPrimary,
-                fontWeight = FontWeight.Bold
+                fontWeight = FontWeight.Medium
             )
             Text(
                 text = " • $timeDifferenceString",
@@ -92,7 +88,7 @@ fun DigitalTimeView(
             )
         }
 
-        Spacer(modifier = Modifier.height(10.dp))
+        Spacer(modifier = Modifier.height(8.dp))
 
         // Time display
         Row(
@@ -103,14 +99,14 @@ fun DigitalTimeView(
                 text = timeDigits,
                 style = MaterialTheme.typography.displayMedium,
                 color = TextPrimary,
-                fontWeight = FontWeight.ExtraBold,
+                fontWeight = FontWeight.SemiBold,
                 letterSpacing = (-0.5).sp
             )
             Text(
                 text = seconds,
                 style = MaterialTheme.typography.titleMedium,
-                color = AccentCyan,
-                fontWeight = FontWeight.SemiBold,
+                color = TextSecondary,
+                fontWeight = FontWeight.Normal,
                 modifier = Modifier.padding(bottom = 6.dp, start = 2.dp)
             )
             if (amPm.isNotEmpty()) {
@@ -118,8 +114,8 @@ fun DigitalTimeView(
                 Text(
                     text = amPm,
                     style = MaterialTheme.typography.titleMedium,
-                    color = AccentGold,
-                    fontWeight = FontWeight.Bold,
+                    color = TextSecondary,
+                    fontWeight = FontWeight.Medium,
                     modifier = Modifier.padding(bottom = 6.dp)
                 )
             }
@@ -132,3 +128,4 @@ fun DigitalTimeView(
         )
     }
 }
+

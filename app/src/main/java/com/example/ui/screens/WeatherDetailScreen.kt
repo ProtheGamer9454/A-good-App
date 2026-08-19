@@ -109,42 +109,43 @@ fun WeatherDetailScreen(
             item {
                 Row(
                     modifier = Modifier.fillMaxWidth(),
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.SpaceBetween
+                    verticalAlignment = Alignment.CenterVertically
                 ) {
                     // Location selection row
                     LazyRow(
                         modifier = Modifier.weight(1f),
-                        horizontalArrangement = Arrangement.spacedBy(6.dp)
+                        horizontalArrangement = Arrangement.spacedBy(8.dp),
+                        contentPadding = PaddingValues(end = 6.dp)
                     ) {
                         items(uiState.savedLocations) { loc ->
                             val isSelected = loc.id == uiState.selectedLocationId
-                            val chipBg = if (isSelected) AccentCyan.copy(alpha = 0.2f) else Color(0x33101C33)
-                            val chipBorder = if (isSelected) AccentCyan else DarkCardBorder
+                            val chipBg = if (isSelected) Color(0x22FFFFFF) else Color(0x0DFFFFFF)
+                            val chipBorder = if (isSelected) Color(0x60FFFFFF) else DarkCardBorder
 
                             Row(
                                 verticalAlignment = Alignment.CenterVertically,
                                 modifier = Modifier
-                                    .clip(RoundedCornerShape(8.dp))
+                                    .clip(RoundedCornerShape(20.dp))
                                     .background(chipBg)
-                                    .border(1.dp, chipBorder, RoundedCornerShape(8.dp))
+                                    .border(0.8.dp, chipBorder, RoundedCornerShape(20.dp))
                                     .clickable { viewModel.selectLocation(loc) }
-                                    .padding(horizontal = 10.dp, vertical = 6.dp)
+                                    .padding(horizontal = 12.dp, vertical = 8.dp)
                             ) {
                                 if (loc.isCurrentLocation) {
                                     Icon(
                                         imageVector = Icons.Default.MyLocation,
                                         contentDescription = "Current Location",
-                                        tint = if (isSelected) AccentCyan else TextSecondary,
+                                        tint = if (isSelected) AccentCyan else TextTertiary,
                                         modifier = Modifier.size(12.dp)
                                     )
-                                    Spacer(modifier = Modifier.width(4.dp))
+                                    Spacer(modifier = Modifier.width(5.dp))
                                 }
                                 Text(
                                     text = loc.name,
                                     style = MaterialTheme.typography.labelMedium,
                                     color = if (isSelected) TextPrimary else TextSecondary,
-                                    fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Medium
+                                    fontWeight = if (isSelected) FontWeight.SemiBold else FontWeight.Normal,
+                                    maxLines = 1
                                 )
                             }
                         }
@@ -152,42 +153,48 @@ fun WeatherDetailScreen(
 
                     Spacer(modifier = Modifier.width(8.dp))
 
-                    // GPS detect button
-                    IconButton(
-                        onClick = onRequestGpsLocation,
-                        modifier = Modifier
-                            .size(36.dp)
-                            .clip(RoundedCornerShape(8.dp))
-                            .background(Color(0x2238BDF8))
-                            .border(1.dp, DarkCardBorder, RoundedCornerShape(8.dp))
-                            .testTag("gps_location_button")
+                    // Action buttons with fixed spacing to prevent overlap
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.spacedBy(8.dp)
                     ) {
-                        Icon(
-                            imageVector = Icons.Default.MyLocation,
-                            contentDescription = "Detect Location",
-                            tint = AccentCyan,
-                            modifier = Modifier.size(16.dp)
-                        )
-                    }
+                        // GPS detect button
+                        Box(
+                            modifier = Modifier
+                                .size(38.dp)
+                                .clip(CircleShape)
+                                .background(Color(0x14FFFFFF))
+                                .border(0.8.dp, DarkCardBorder, CircleShape)
+                                .clickable { onRequestGpsLocation() }
+                                .testTag("gps_location_button"),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            Icon(
+                                imageVector = Icons.Default.MyLocation,
+                                contentDescription = "Detect Location",
+                                tint = TextPrimary,
+                                modifier = Modifier.size(17.dp)
+                            )
+                        }
 
-                    Spacer(modifier = Modifier.width(6.dp))
-
-                    // Add city button
-                    IconButton(
-                        onClick = onNavigateToSearch,
-                        modifier = Modifier
-                            .size(36.dp)
-                            .clip(RoundedCornerShape(8.dp))
-                            .background(Color(0x2238BDF8))
-                            .border(1.dp, DarkCardBorder, RoundedCornerShape(8.dp))
-                            .testTag("add_city_button")
-                    ) {
-                        Icon(
-                            imageVector = Icons.Default.Add,
-                            contentDescription = "Add Location",
-                            tint = AccentCyan,
-                            modifier = Modifier.size(18.dp)
-                        )
+                        // Add city button
+                        Box(
+                            modifier = Modifier
+                                .size(38.dp)
+                                .clip(CircleShape)
+                                .background(Color(0x14FFFFFF))
+                                .border(0.8.dp, DarkCardBorder, CircleShape)
+                                .clickable { onNavigateToSearch() }
+                                .testTag("add_city_button"),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            Icon(
+                                imageVector = Icons.Default.Add,
+                                contentDescription = "Add Location",
+                                tint = TextPrimary,
+                                modifier = Modifier.size(18.dp)
+                            )
+                        }
                     }
                 }
             }
@@ -198,7 +205,7 @@ fun WeatherDetailScreen(
                     Surface(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .glassmorphicCard(12.dp, borderColor = Color(0x66F87171), backgroundColor = Color(0x33F87171)),
+                            .glassmorphicCard(12.dp, borderColor = Color(0x33F87171), backgroundColor = Color(0x18F87171)),
                         color = Color.Transparent
                     ) {
                         Row(
@@ -209,7 +216,7 @@ fun WeatherDetailScreen(
                                 imageVector = Icons.Default.Warning,
                                 contentDescription = "Error",
                                 tint = Color(0xFFF87171),
-                                modifier = Modifier.size(18.dp)
+                                modifier = Modifier.size(16.dp)
                             )
                             Spacer(modifier = Modifier.width(8.dp))
                             Text(
@@ -225,7 +232,7 @@ fun WeatherDetailScreen(
                                 Icon(
                                     imageVector = Icons.Default.Refresh,
                                     contentDescription = "Retry",
-                                    tint = AccentCyan,
+                                    tint = TextPrimary,
                                     modifier = Modifier.size(16.dp)
                                 )
                             }
@@ -234,114 +241,77 @@ fun WeatherDetailScreen(
                 }
             }
 
-            // Hero Weather Card with Dynamic Sky Glow & Local Time
+            // Clean Minimalist Hero Weather Card
             item {
                 Surface(
                     modifier = Modifier
                         .fillMaxWidth()
                         .glassmorphicCard(
-                            cornerRadius = 16.dp,
-                            borderColor = if (isDay) Color(0x4438BDF8) else Color(0x44A78BFA),
-                            backgroundColor = Color(0x990C1629)
+                            cornerRadius = 20.dp,
+                            borderColor = DarkCardBorder,
+                            backgroundColor = DarkCardBg
                         ),
                     color = Color.Transparent
                 ) {
                     Column(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(16.dp),
+                            .padding(20.dp),
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
-                        // Location Header & Country
+                        // Location Title & Refresh
                         Row(
                             modifier = Modifier.fillMaxWidth(),
                             horizontalArrangement = Arrangement.SpaceBetween,
-                            verticalAlignment = Alignment.CenterVertically
+                            verticalAlignment = Alignment.Top
                         ) {
-                            Row(verticalAlignment = Alignment.CenterVertically) {
-                                Icon(
-                                    imageVector = if (currentLocation?.isCurrentLocation == true) Icons.Default.LocationOn else Icons.Default.LocationOn,
-                                    contentDescription = "Place",
-                                    tint = AccentCyan,
-                                    modifier = Modifier.size(18.dp)
+                            Column(modifier = Modifier.weight(1f)) {
+                                Text(
+                                    text = currentLocation?.name ?: "Unknown Place",
+                                    style = MaterialTheme.typography.headlineMedium,
+                                    color = TextPrimary,
+                                    fontWeight = FontWeight.SemiBold
                                 )
-                                Spacer(modifier = Modifier.width(6.dp))
-                                Column {
+                                val region = listOfNotNull(currentLocation?.admin1, currentLocation?.country)
+                                    .filter { it.isNotBlank() }
+                                    .joinToString(", ")
+                                if (region.isNotBlank()) {
                                     Text(
-                                        text = currentLocation?.name ?: "Unknown Place",
-                                        style = MaterialTheme.typography.headlineMedium,
-                                        color = TextPrimary,
-                                        fontWeight = FontWeight.Bold
+                                        text = region,
+                                        style = MaterialTheme.typography.bodySmall,
+                                        color = TextSecondary
                                     )
-                                    val region = listOfNotNull(currentLocation?.admin1, currentLocation?.country)
-                                        .filter { it.isNotBlank() }
-                                        .joinToString(", ")
-                                    if (region.isNotBlank()) {
-                                        Text(
-                                            text = region,
-                                            style = MaterialTheme.typography.bodySmall,
-                                            color = TextSecondary
-                                        )
-                                    }
                                 }
                             }
 
                             IconButton(
                                 onClick = { viewModel.refreshCurrentWeather() },
                                 modifier = Modifier
-                                    .size(34.dp)
-                                    .clip(RoundedCornerShape(8.dp))
-                                    .background(Color(0x22FFFFFF))
+                                    .size(32.dp)
+                                    .clip(CircleShape)
+                                    .background(Color(0x0DFFFFFF))
                                     .testTag("refresh_weather_button")
                             ) {
                                 if (uiState.isRefreshing || uiState.isLoading) {
                                     CircularProgressIndicator(
-                                        color = AccentCyan,
+                                        color = TextPrimary,
                                         strokeWidth = 2.dp,
-                                        modifier = Modifier.size(16.dp)
+                                        modifier = Modifier.size(14.dp)
                                     )
                                 } else {
                                     Icon(
                                         imageVector = Icons.Default.Refresh,
                                         contentDescription = "Refresh",
-                                        tint = TextPrimary,
-                                        modifier = Modifier.size(16.dp)
+                                        tint = TextSecondary,
+                                        modifier = Modifier.size(15.dp)
                                     )
                                 }
                             }
                         }
 
-                        Spacer(modifier = Modifier.height(14.dp))
+                        Spacer(modifier = Modifier.height(18.dp))
 
-                        // Live Timezone & Clock Switcher
-                        Row(
-                            modifier = Modifier
-                                .clip(RoundedCornerShape(12.dp))
-                                .background(Color(0x33000000))
-                                .border(1.dp, DarkCardBorder, RoundedCornerShape(12.dp))
-                                .clickable { showAnalogClock = !showAnalogClock }
-                                .padding(10.dp),
-                            verticalAlignment = Alignment.CenterVertically,
-                            horizontalArrangement = Arrangement.Center
-                        ) {
-                            if (showAnalogClock) {
-                                AnalogClockView(
-                                    zonedDateTime = zonedDateTime,
-                                    isDay = isDay,
-                                    size = 110.dp
-                                )
-                            } else {
-                                DigitalTimeView(
-                                    zonedDateTime = zonedDateTime,
-                                    timeFormat = uiState.timeFormat,
-                                    timeDifferenceString = timeDiff
-                                )
-                            }
-                        }
-
-                        Spacer(modifier = Modifier.height(14.dp))
-
-                        // Large Temperature & Condition Display
+                        // Large Minimal Temperature & Weather Emoji
                         val tempVal = currentUnits?.temperature ?: currentLocation?.cachedTemp
                         val conditionDesc = currentUnits?.let { WeatherCodeUtil.getCondition(it.weatherCode) }
                             ?: currentLocation?.cachedCondition
@@ -354,56 +324,89 @@ fun WeatherDetailScreen(
                         ) {
                             Text(
                                 text = emoji,
-                                fontSize = 56.sp
+                                fontSize = 44.sp
                             )
-                            Spacer(modifier = Modifier.width(14.dp))
+                            Spacer(modifier = Modifier.width(12.dp))
                             Text(
                                 text = viewModel.formatTemperatureValueOnly(tempVal),
-                                style = MaterialTheme.typography.displayLarge,
+                                fontSize = 68.sp,
+                                lineHeight = 72.sp,
                                 color = TextPrimary,
-                                fontWeight = FontWeight.ExtraBold,
+                                fontWeight = FontWeight.Light,
                                 letterSpacing = (-2).sp
                             )
                             Text(
                                 text = uiState.tempUnit.symbol,
-                                style = MaterialTheme.typography.headlineMedium,
-                                color = AccentCyan,
-                                fontWeight = FontWeight.Bold,
-                                modifier = Modifier.padding(bottom = 20.dp)
+                                style = MaterialTheme.typography.titleLarge,
+                                color = TextSecondary,
+                                fontWeight = FontWeight.Normal,
+                                modifier = Modifier.padding(bottom = 28.dp)
                             )
                         }
 
                         Text(
                             text = conditionDesc,
-                            style = MaterialTheme.typography.titleLarge,
+                            style = MaterialTheme.typography.titleMedium,
                             color = TextPrimary,
-                            fontWeight = FontWeight.SemiBold
+                            fontWeight = FontWeight.Medium
                         )
 
-                        Spacer(modifier = Modifier.height(6.dp))
+                        Spacer(modifier = Modifier.height(8.dp))
 
-                        // High / Low / Feels like row
+                        // High / Low / Feels like clean row
                         val minTemp = detail?.dailyForecasts?.firstOrNull()?.tempMinC ?: currentLocation?.cachedTempMin
                         val maxTemp = detail?.dailyForecasts?.firstOrNull()?.tempMaxC ?: currentLocation?.cachedTempMax
                         val feelsLike = currentUnits?.apparentTemperature
 
                         Row(
-                            horizontalArrangement = Arrangement.spacedBy(14.dp),
+                            horizontalArrangement = Arrangement.spacedBy(8.dp),
                             verticalAlignment = Alignment.CenterVertically
                         ) {
                             if (minTemp != null && maxTemp != null) {
                                 Text(
-                                    text = "H: ${viewModel.formatTemperature(maxTemp)}  L: ${viewModel.formatTemperature(minTemp)}",
+                                    text = "H: ${viewModel.formatTemperature(maxTemp)}  •  L: ${viewModel.formatTemperature(minTemp)}",
                                     style = MaterialTheme.typography.bodyMedium,
                                     color = TextSecondary
                                 )
                             }
                             if (feelsLike != null) {
                                 Text(
-                                    text = "Feels like ${viewModel.formatTemperature(feelsLike)}",
+                                    text = "•",
                                     style = MaterialTheme.typography.bodyMedium,
-                                    color = AccentSkyBlue,
-                                    fontWeight = FontWeight.Medium
+                                    color = TextTertiary
+                                )
+                                Text(
+                                    text = "Feels ${viewModel.formatTemperature(feelsLike)}",
+                                    style = MaterialTheme.typography.bodyMedium,
+                                    color = TextSecondary
+                                )
+                            }
+                        }
+
+                        Spacer(modifier = Modifier.height(14.dp))
+
+                        // Minimal Timezone / Local Time Chip
+                        Row(
+                            modifier = Modifier
+                                .clip(RoundedCornerShape(12.dp))
+                                .background(Color(0x0AFFFFFF))
+                                .border(0.8.dp, DarkCardBorder, RoundedCornerShape(12.dp))
+                                .clickable { showAnalogClock = !showAnalogClock }
+                                .padding(horizontal = 14.dp, vertical = 8.dp),
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.Center
+                        ) {
+                            if (showAnalogClock) {
+                                AnalogClockView(
+                                    zonedDateTime = zonedDateTime,
+                                    isDay = isDay,
+                                    size = 90.dp
+                                )
+                            } else {
+                                DigitalTimeView(
+                                    zonedDateTime = zonedDateTime,
+                                    timeFormat = uiState.timeFormat,
+                                    timeDifferenceString = timeDiff
                                 )
                             }
                         }

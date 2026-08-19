@@ -6,10 +6,21 @@ import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.data.local.AppDatabase
+import com.example.data.model.AlertSeverity
+import com.example.data.model.AlertType
+import com.example.data.model.CountryInfo
 import com.example.data.model.GeoLocationResult
 import com.example.data.model.LocationEntity
+import com.example.data.model.SevereWeatherDetector
+import com.example.data.model.StateInfo
+import com.example.data.model.WeatherAlert
+import com.example.data.model.WorldCountriesDatabase
+import com.example.data.model.WorldTimeZoneItem
+import com.example.data.model.WorldTimeZoneRepository
 import com.example.data.repository.LocationWeatherDetail
+import com.example.data.repository.QuickWeatherSnapshot
 import com.example.data.repository.WeatherRepository
+import com.example.notifications.WeatherNotificationHelper
 import com.google.android.gms.location.LocationServices
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
@@ -40,8 +51,27 @@ class WeatherViewModel(application: Application) : AndroidViewModel(application)
     private var searchJob: Job? = null
 
     init {
+        WeatherNotificationHelper.initNotificationChannels(application)
         startClockTicker()
         observeLocations()
+    }
+
+    private fun processSevereWeatherAlerts(location: LocationEntity, detail: LocationWeatherDetail) {
+        val previousTemp = location.cachedTemp
+        val detected = SevereWeatherDetector.analyzeWeather(location, detail, previousTemp)
+        if (detected.isNotEmpty()) {
+            _uiState.update { state ->
+                val existingIds = state.activeAlerts.map { it.id }.toSet()
+                val newAlerts = detected.filter { it.id !in existingIds }
+                val merged = (newAlerts + state.activeAlerts).distinctBy { "${it.locationId}_${it.type}" }
+                state.copy(activeAlerts = merged)
+            }
+            if (_uiState.value.severeAlertsEnabled) {
+                detected.forEach { alert ->
+                    WeatherNotificationHelper.showWeatherAlertNotification(getApplication(), alert)
+                }
+            }
+        }
     }
 
     private fun startClockTicker() {
@@ -121,6 +151,7 @@ class WeatherViewModel(application: Application) : AndroidViewModel(application)
                         isLoading = false
                     )
                 }
+                processSevereWeatherAlerts(location, detail)
             }.onFailure { error ->
                 _uiState.update {
                     it.copy(
@@ -149,6 +180,7 @@ class WeatherViewModel(application: Application) : AndroidViewModel(application)
                         errorMessage = null
                     )
                 }
+                processSevereWeatherAlerts(loc, detail)
             }.onFailure { error ->
                 _uiState.update {
                     it.copy(
@@ -175,6 +207,7 @@ class WeatherViewModel(application: Application) : AndroidViewModel(application)
                             updatedMap[loc.id] = detail
                             state.copy(cachedWeatherMap = updatedMap)
                         }
+                        processSevereWeatherAlerts(loc, detail)
                     }
                     delay(200) // slight delay to avoid bursting API
                 }
@@ -305,6 +338,171 @@ class WeatherViewModel(application: Application) : AndroidViewModel(application)
             )
             _uiState.update { it.copy(selectedLocationId = id, activeTab = NavigationTab.WEATHER) }
         }
+    }
+
+    // Country & State-wise Weather Functions
+    fun selectCountry(countryId: String) {
+        _uiState.update { it.copy(selectedCountryId = countryId, stateSearchQuery = "") }
+        val country = WorldCountriesDatabase.COUNTRIES.firstOrNull { it.id == countryId }
+        if (country != null) {
+            loadStateWeatherForCountry(country)
+        }
+    }
+
+    fun selectContinent(continent: String) {
+        _uiState.update { it.copy(selectedContinent = continent) }
+        val filtered = if (continent == "All Continents") {
+            WorldCountriesDatabase.COUNTRIES
+        } else {
+            WorldCountriesDatabase.COUNTRIES.filter { it.continent == continent }
+        }
+        if (!filtered.any { it.id == _uiState.value.selectedCountryId }) {
+            filtered.firstOrNull()?.let { selectCountry(it.id) }
+        }
+    }
+
+    fun setCountrySearchQuery(query: String) {
+        _uiState.update { it.copy(countrySearchQuery = query) }
+    }
+
+    fun setStateSearchQuery(query: String) {
+        _uiState.update { it.copy(stateSearchQuery = query) }
+    }
+
+    fun loadStateWeatherForCountry(country: CountryInfo) {
+        viewModelScope.launch {
+            _uiState.update { it.copy(isLoadingStateWeather = true) }
+            country.states.forEach { state ->
+                val cacheKey = "${country.code}_${state.name}"
+                val existing = _uiState.value.stateWeatherCache[cacheKey]
+                if (existing == null) {
+                    val snapshot = repository.fetchQuickWeather(state.latitude, state.longitude, state.timezone)
+                    if (snapshot != null) {
+                        _uiState.update { cur ->
+                            val map = cur.stateWeatherCache.toMutableMap()
+                            map[cacheKey] = snapshot
+                            cur.copy(stateWeatherCache = map)
+                        }
+                    }
+                    delay(120) // Throttle requests smoothly
+                }
+            }
+            _uiState.update { it.copy(isLoadingStateWeather = false) }
+        }
+    }
+
+    fun openStateInWeatherView(state: StateInfo, countryName: String) {
+        viewModelScope.launch {
+            val id = repository.addLocation(
+                name = "${state.name} (${state.capitalOrHub})",
+                country = countryName,
+                admin1 = state.name,
+                latitude = state.latitude,
+                longitude = state.longitude,
+                timezone = state.timezone,
+                isCurrent = false
+            )
+            _uiState.update {
+                it.copy(
+                    selectedLocationId = id,
+                    activeTab = NavigationTab.WEATHER
+                )
+            }
+        }
+    }
+
+    // Time Zone Explorer Functions
+    fun setTimeZoneSearchQuery(query: String) {
+        _uiState.update { it.copy(timeZoneSearchQuery = query) }
+    }
+
+    fun setSelectedTimeZoneRegion(region: String) {
+        _uiState.update { it.copy(selectedTimeZoneRegion = region) }
+    }
+
+    fun openTimeZoneInWeatherView(zoneItem: WorldTimeZoneItem) {
+        viewModelScope.launch {
+            val id = repository.addLocation(
+                name = zoneItem.cityName,
+                country = zoneItem.region,
+                admin1 = zoneItem.zoneId,
+                latitude = zoneItem.approxLat,
+                longitude = zoneItem.approxLon,
+                timezone = zoneItem.zoneId,
+                isCurrent = false
+            )
+            _uiState.update {
+                it.copy(
+                    selectedLocationId = id,
+                    activeTab = NavigationTab.WEATHER
+                )
+            }
+        }
+    }
+
+    fun addTimeZoneToSavedClocks(zoneItem: WorldTimeZoneItem) {
+        viewModelScope.launch {
+            repository.addLocation(
+                name = zoneItem.cityName,
+                country = zoneItem.region,
+                admin1 = zoneItem.zoneId,
+                latitude = zoneItem.approxLat,
+                longitude = zoneItem.approxLon,
+                timezone = zoneItem.zoneId,
+                isCurrent = false
+            )
+        }
+    }
+
+    // Severe Alert Management
+    fun toggleSevereAlerts(enabled: Boolean) {
+        _uiState.update { it.copy(severeAlertsEnabled = enabled) }
+    }
+
+    fun dismissAlert(alertId: String) {
+        _uiState.update { state ->
+            val updated = state.activeAlerts.filter { it.id != alertId }
+            state.copy(
+                activeAlerts = updated,
+                selectedAlertForDetail = if (state.selectedAlertForDetail?.id == alertId) null else state.selectedAlertForDetail
+            )
+        }
+    }
+
+    fun clearAllAlerts() {
+        _uiState.update { it.copy(activeAlerts = emptyList(), selectedAlertForDetail = null) }
+    }
+
+    fun openAlertDetail(alert: WeatherAlert?) {
+        _uiState.update { it.copy(selectedAlertForDetail = alert) }
+    }
+
+    fun setAlertCenterOpen(open: Boolean) {
+        _uiState.update { it.copy(isAlertCenterOpen = open) }
+    }
+
+    fun triggerSimulatedSevereAlert() {
+        val currentLoc = _uiState.value.savedLocations.firstOrNull { it.id == _uiState.value.selectedLocationId }
+            ?: _uiState.value.savedLocations.firstOrNull()
+        val locName = currentLoc?.name ?: "Current Location"
+        val locId = currentLoc?.id ?: 1L
+
+        val simulated = WeatherAlert(
+            locationId = locId,
+            locationName = locName,
+            severity = AlertSeverity.CRITICAL,
+            type = AlertType.THUNDERSTORM,
+            title = "⛈️ Severe Thunderstorm & Flash Flood Warning",
+            message = "Violent thunderstorm cell with destructive 70 km/h wind gusts and heavy hail moving rapidly into $locName.",
+            safetyAdvice = "Take immediate shelter in an interior room on the lowest floor. Avoid open roads and waterways."
+        )
+
+        _uiState.update { state ->
+            val existing = state.activeAlerts.filter { it.title != simulated.title }
+            state.copy(activeAlerts = listOf(simulated) + existing)
+        }
+
+        WeatherNotificationHelper.showWeatherAlertNotification(getApplication(), simulated)
     }
 
     // Conversion helpers

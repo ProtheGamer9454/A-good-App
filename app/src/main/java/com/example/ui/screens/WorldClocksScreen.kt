@@ -109,19 +109,20 @@ fun WorldClocksScreen(
                         }
                     }
 
-                    IconButton(
-                        onClick = onNavigateToSearch,
+                    Box(
                         modifier = Modifier
-                            .size(36.dp)
-                            .clip(RoundedCornerShape(8.dp))
-                            .background(Color(0x2238BDF8))
-                            .border(1.dp, AccentCyan.copy(alpha = 0.6f), RoundedCornerShape(8.dp))
-                            .testTag("add_world_clock_button")
+                            .size(38.dp)
+                            .clip(CircleShape)
+                            .background(Color(0x14FFFFFF))
+                            .border(0.8.dp, DarkCardBorder, CircleShape)
+                            .clickable { onNavigateToSearch() }
+                            .testTag("add_world_clock_button"),
+                        contentAlignment = Alignment.Center
                     ) {
                         Icon(
                             imageVector = Icons.Default.Add,
                             contentDescription = "Add World Clock",
-                            tint = AccentCyan,
+                            tint = TextPrimary,
                             modifier = Modifier.size(18.dp)
                         )
                     }
@@ -189,9 +190,9 @@ fun WorldClockCard(
         modifier = modifier
             .fillMaxWidth()
             .glassmorphicCard(
-                cornerRadius = 12.dp,
-                borderColor = if (location.isCurrentLocation) AccentCyan.copy(alpha = 0.6f) else DarkCardBorder,
-                backgroundColor = if (location.isCurrentLocation) Color(0xFF11213D) else DarkCardBg
+                cornerRadius = 16.dp,
+                borderColor = if (location.isCurrentLocation) Color(0x50FFFFFF) else DarkCardBorder,
+                backgroundColor = if (location.isCurrentLocation) Color(0x14FFFFFF) else DarkCardBg
             )
             .clickable { onClick() }
             .testTag("world_clock_card_${location.name}"),
@@ -200,7 +201,7 @@ fun WorldClockCard(
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(12.dp),
+                .padding(14.dp),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
@@ -208,10 +209,10 @@ fun WorldClockCard(
             AnalogClockView(
                 zonedDateTime = zonedDateTime,
                 isDay = isDay,
-                size = 48.dp
+                size = 46.dp
             )
 
-            Spacer(modifier = Modifier.width(12.dp))
+            Spacer(modifier = Modifier.width(14.dp))
 
             // Middle: Location Name, Country, Time Difference
             Column(modifier = Modifier.weight(1f)) {
@@ -223,14 +224,14 @@ fun WorldClockCard(
                             tint = AccentCyan,
                             modifier = Modifier
                                 .size(13.dp)
-                                .padding(end = 3.dp)
+                                .padding(end = 4.dp)
                         )
                     }
                     Text(
                         text = location.name,
                         style = MaterialTheme.typography.titleMedium,
                         color = TextPrimary,
-                        fontWeight = FontWeight.Bold
+                        fontWeight = FontWeight.SemiBold
                     )
                 }
 
@@ -241,20 +242,20 @@ fun WorldClockCard(
                     maxLines = 1
                 )
 
-                Spacer(modifier = Modifier.height(2.dp))
+                Spacer(modifier = Modifier.height(3.dp))
 
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     Icon(
                         imageVector = if (isDay) Icons.Default.LightMode else Icons.Default.DarkMode,
                         contentDescription = if (isDay) "Day" else "Night",
-                        tint = if (isDay) AccentGold else AccentSkyBlue,
+                        tint = TextSecondary,
                         modifier = Modifier.size(11.dp)
                     )
                     Spacer(modifier = Modifier.width(4.dp))
                     Text(
                         text = "$dayOfWeek • $timeDiff",
                         style = MaterialTheme.typography.labelSmall,
-                        color = if (isDay) AccentGold else AccentSkyBlue,
+                        color = TextSecondary,
                         fontSize = 11.sp
                     )
                 }
@@ -265,40 +266,40 @@ fun WorldClockCard(
                 Row(verticalAlignment = Alignment.Bottom) {
                     Text(
                         text = timeDigits,
-                        style = MaterialTheme.typography.headlineMedium,
+                        style = MaterialTheme.typography.titleLarge,
                         color = TextPrimary,
-                        fontWeight = FontWeight.ExtraBold
+                        fontWeight = FontWeight.SemiBold
                     )
                     if (amPm.isNotEmpty()) {
                         Spacer(modifier = Modifier.width(3.dp))
                         Text(
                             text = amPm,
                             style = MaterialTheme.typography.labelSmall,
-                            color = AccentGold,
-                            fontWeight = FontWeight.Bold,
-                            modifier = Modifier.padding(bottom = 3.dp)
+                            color = TextSecondary,
+                            fontWeight = FontWeight.Medium,
+                            modifier = Modifier.padding(bottom = 2.dp)
                         )
                     }
                 }
 
-                Spacer(modifier = Modifier.height(2.dp))
+                Spacer(modifier = Modifier.height(4.dp))
 
                 // Weather badge
                 Row(
                     verticalAlignment = Alignment.CenterVertically,
                     modifier = Modifier
-                        .clip(RoundedCornerShape(6.dp))
-                        .background(Color(0x33000000))
-                        .border(0.8.dp, DarkCardBorder, RoundedCornerShape(6.dp))
-                        .padding(horizontal = 6.dp, vertical = 2.dp)
+                        .clip(RoundedCornerShape(8.dp))
+                        .background(Color(0x0EFFFFFF))
+                        .border(0.6.dp, DarkCardBorder, RoundedCornerShape(8.dp))
+                        .padding(horizontal = 7.dp, vertical = 2.dp)
                 ) {
-                    Text(text = emoji, fontSize = 13.sp)
+                    Text(text = emoji, fontSize = 12.sp)
                     Spacer(modifier = Modifier.width(4.dp))
                     Text(
                         text = viewModel.formatTemperature(temp),
-                        style = MaterialTheme.typography.labelMedium,
+                        style = MaterialTheme.typography.labelSmall,
                         color = TextPrimary,
-                        fontWeight = FontWeight.SemiBold
+                        fontWeight = FontWeight.Medium
                     )
                 }
             }
